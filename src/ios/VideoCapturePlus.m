@@ -274,9 +274,45 @@
 
 - (CDVPluginResult*)processVideo:(NSString*)moviePath forCallbackId:(NSString*)callbackId {
     // save the movie to photo album (only avail as of iOS 3.1)
-    NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
+    
+	//attempting conversion via export
+	NSURL * mediaURL = [NSURL fileURLWithPath:moviePath];
+    AVAsset *video = [AVAsset assetWithURL:mediaURL];
+    AVAssetExportSession *exportSession = [AVAssetExportSession exportSessionWithAsset:video presetName:AVAssetExportPresetMediumQuality];
+    exportSession.shouldOptimizeForNetworkUse = YES;
+    exportSession.outputFileType = AVFileTypeMPEG4;
+
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    basePath = [basePath stringByAppendingPathComponent:@"videos"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:basePath])
+        [[NSFileManager defaultManager] createDirectoryAtPath:basePath withIntermediateDirectories:YES attributes:nil error:nil];
+
+    compressedVideoUrl=nil;
+    compressedVideoUrl = [NSURL fileURLWithPath:basePath];
+    long CurrentTime = [[NSDate date] timeIntervalSince1970];
+    NSString *strImageName = [NSString stringWithFormat:@"%ld",CurrentTime];
+    compressedVideoUrl=[compressedVideoUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp4",strImageName]];
+
+    exportSession.outputURL = compressedVideoUrl;
+
+    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+
+        NSLog(@"done processing video!");
+        NSLog(@"%@",compressedVideoUrl);
+		NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
     NSArray* fileArray = [NSArray arrayWithObject:fileDict];
-    return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
+return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
+        //if(!dataMovie)
+          //  dataMovie = [[NSMutableData alloc] init];
+        //dataMovie = [NSData dataWithContentsOfURL:compressedVideoUrl];
+		
+
+    }];
+	
+	
+	//done with conversion code
+    
 }
 
 - (NSString*)getMimeTypeFromFullPath:(NSString*)fullPath {
