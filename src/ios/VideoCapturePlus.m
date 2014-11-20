@@ -276,15 +276,15 @@
     // save the movie to photo album (only avail as of iOS 3.1)
     NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
     NSArray* fileArray = [NSArray arrayWithObject:fileDict];
-	AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:videoURL options:nil];
+	AVURLAsset* avAsset = [AVURLAsset URLAssetWithURL:moviePath options:nil];
 
-            NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
+            NSArray* compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
 
-            if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
+            //if ([compatiblePresets containsObject:AVAssetExportPresetPassthrough])
 
-            {
+            //{
 
-                AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetLowQuality];
+                AVAssetExportSession* exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
 
                 exportSession.outputURL = [NSURL fileURLWithPath:moviePath];
 
@@ -323,7 +323,7 @@
 
                 }];
 
-            }
+            }//
     return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
 }
 
