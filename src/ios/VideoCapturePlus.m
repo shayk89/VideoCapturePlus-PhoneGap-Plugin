@@ -404,70 +404,54 @@
     }
     
     CDVPluginResult* result = nil;
-	
-    
-	NSString* moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
-	NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
+    NSString* moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
     if (moviePath) {
-	if (CFStringCompare ((__bridge_retained CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo)
- {
-   if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(moviePath))
-   {
-         NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-         NSString *moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
-         NSString *videoPath1 =[NSString stringWithFormat:@"%@/xyz.mov",docDir];
-         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
-         NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
-         [videoData writeToFile:videoPath1 atomically:NO];
-       //  UISaveVideoAtPathToSavedPhotosAlbum(moviePath, self, nil, nil);
-   }
- }
-		 
-	AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:videoPath1] options:nil];
+	   AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:moviePath] options:nil];
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
 
-		if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
-		{
-			AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
-			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-			NSString *videoPath = [NSString stringWithFormat:@"%@/xyz.mp4", [paths objectAtIndex:0]];
-			exportSession.outputURL = [NSURL fileURLWithPath:videoPath];
-			NSLog(@"videopath of your mp4 file = %@",videoPath);  // PATH OF YOUR .mp4 FILE
-			exportSession.outputFileType = AVFileTypeMPEG4;
+    if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
+    {
+        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *videoPath = [NSString stringWithFormat:@"%@/xyz.mp4", [paths objectAtIndex:0]];
+        exportSession.outputURL = [NSURL fileURLWithPath:videoPath];
+        NSLog(@"videopath of your mp4 file = %@",videoPath);  // PATH OF YOUR .mp4 FILE
+        exportSession.outputFileType = AVFileTypeMPEG4;
 
-		  //  CMTime start = CMTimeMakeWithSeconds(1.0, 600);
-		  //  CMTime duration = CMTimeMakeWithSeconds(3.0, 600);           
-		  //  CMTimeRange range = CMTimeRangeMake(start, duration);            
-		  //   exportSession.timeRange = range;        
-		  //  UNCOMMENT ABOVE LINES FOR CROP VIDEO   
-			[exportSession exportAsynchronouslyWithCompletionHandler:^{
+      //  CMTime start = CMTimeMakeWithSeconds(1.0, 600);
+      //  CMTime duration = CMTimeMakeWithSeconds(3.0, 600);           
+      //  CMTimeRange range = CMTimeRangeMake(start, duration);            
+      //   exportSession.timeRange = range;        
+      //  UNCOMMENT ABOVE LINES FOR CROP VIDEO   
+        [exportSession exportAsynchronouslyWithCompletionHandler:^{
 
-				switch ([exportSession status]) {
+            switch ([exportSession status]) {
 
-					case AVAssetExportSessionStatusFailed:
-						NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+                case AVAssetExportSessionStatusFailed:
+                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
 
-						break;
+                    break;
 
-					case AVAssetExportSessionStatusCancelled:
+                case AVAssetExportSessionStatusCancelled:
 
-						NSLog(@"Export canceled");
+                    NSLog(@"Export canceled");
 
-						break;
+                    break;
 
-					default:
-						result = [self processVideo:videoPath forCallbackId:callbackId];
-						break;
+                default:
 
-				}
-				 UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, nil, nil);
-				[exportSession release];
+                    break;
 
-			}];
+            }
+             UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, nil, nil);
+            [exportSession release];
+			result = [self processVideo:videoPath forCallbackId:callbackId];
 
-		}
+        }];
 
+    }else{
         result = [self processVideo:moviePath forCallbackId:callbackId];
+		}
     }
     if (!result) {
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_INTERNAL_ERR];
