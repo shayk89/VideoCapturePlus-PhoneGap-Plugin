@@ -300,24 +300,7 @@
 
                 [exportSession exportAsynchronouslyWithCompletionHandler:^{
 
-                    switch ([exportSession status]) {
-
-                        case AVAssetExportSessionStatusFailed:
-                            NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
-
-                            break;
-
-                        case AVAssetExportSessionStatusCancelled:
-
-                            NSLog(@"Export canceled");
-
-                            break;
-
-                        default:
-
-                            break;
-
-                    }
+                    
  return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
                     [exportSession release];
 
