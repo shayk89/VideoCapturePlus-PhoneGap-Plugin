@@ -404,8 +404,16 @@
     }
     
     CDVPluginResult* result = nil;
+	
     NSString* moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
+	
     if (moviePath) {
+	NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+	NSString *videoPath1 =[NSString stringWithFormat:@"%@/xyz.mov",docDir];
+         NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
+         NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
+         [videoData writeToFile:videoPath1 atomically:NO];
+		 
 	AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:videoPath1] options:nil];
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
 
@@ -449,7 +457,7 @@
         }];
 
     }
-[nextScreenButton setTitle:@"ПРОДЪЛЖИ" forState:UIControlStateNormal];
+[nextScreenButton setTitle:@"Thrift Karma" forState:UIControlStateNormal];
 [self dismissViewControllerAnimated:YES completion:nil];
         result = [self processVideo:videoPath forCallbackId:callbackId];
     }
