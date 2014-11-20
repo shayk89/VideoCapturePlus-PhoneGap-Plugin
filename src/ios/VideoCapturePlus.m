@@ -158,9 +158,9 @@
             // NSLog(@"MediaTypes: %@", [types description]);
             
              if ([types containsObject:(NSString*)kUTTypeVideo]) {
-                mediaType = (NSString*)kUTTypeVideo;
+                mediaType = AVFileTypeMPEG4;//(NSString*)kUTTypeVideo;
             }else if ([types containsObject:(NSString*)kUTTypeMovie]) {
-                mediaType = (NSString*)kUTTypeMovie;
+                mediaType = AVFileTypeMPEG4;//(NSString*)kUTTypeMovie;
             }
         }
     }
