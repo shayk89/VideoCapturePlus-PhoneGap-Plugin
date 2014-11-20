@@ -406,7 +406,52 @@
     CDVPluginResult* result = nil;
     NSString* moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
     if (moviePath) {
-        result = [self processVideo:moviePath forCallbackId:callbackId];
+	AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:videoPath1] options:nil];
+    NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
+
+    if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
+    {
+        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        videoPath = [NSString stringWithFormat:@"%@/xyz.mp4", [paths objectAtIndex:0]];
+        exportSession.outputURL = [NSURL fileURLWithPath:videoPath];
+        NSLog(@"videopath of your mp4 file = %@",videoPath);  // PATH OF YOUR .mp4 FILE
+        exportSession.outputFileType = AVFileTypeMPEG4;
+
+      //  CMTime start = CMTimeMakeWithSeconds(1.0, 600);
+      //  CMTime duration = CMTimeMakeWithSeconds(3.0, 600);           
+      //  CMTimeRange range = CMTimeRangeMake(start, duration);            
+      //   exportSession.timeRange = range;        
+      //  UNCOMMENT ABOVE LINES FOR CROP VIDEO   
+        [exportSession exportAsynchronouslyWithCompletionHandler:^{
+
+            switch ([exportSession status]) {
+
+                case AVAssetExportSessionStatusFailed:
+                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+
+                    break;
+
+                case AVAssetExportSessionStatusCancelled:
+
+                    NSLog(@"Export canceled");
+
+                    break;
+
+                default:
+
+                    break;
+
+            }
+             UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, nil, nil);
+            [exportSession release];
+
+        }];
+
+    }
+[nextScreenButton setTitle:@"ПРОДЪЛЖИ" forState:UIControlStateNormal];
+[self dismissViewControllerAnimated:YES completion:nil];
+        result = [self processVideo:videoPath forCallbackId:callbackId];
     }
     if (!result) {
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_INTERNAL_ERR];
