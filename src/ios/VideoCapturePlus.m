@@ -457,8 +457,7 @@
         }];
 
     }
-[nextScreenButton setTitle:@"Thrift Karma" forState:UIControlStateNormal];
-[self dismissViewControllerAnimated:YES completion:nil];
+
         result = [self processVideo:videoPath forCallbackId:callbackId];
     }
     if (!result) {
