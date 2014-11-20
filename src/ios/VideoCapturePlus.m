@@ -276,6 +276,54 @@
     // save the movie to photo album (only avail as of iOS 3.1)
     NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
     NSArray* fileArray = [NSArray arrayWithObject:fileDict];
+	AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:videoURL options:nil];
+
+            NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
+
+            if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
+
+            {
+
+                AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetLowQuality];
+
+                exportSession.outputURL = [NSURL fileURLWithPath:moviePath];
+
+                exportSession.outputFileType = AVFileTypeMPEG4;
+
+                //CMTime start = CMTimeMakeWithSeconds(1.0, 600);
+
+                //CMTime duration = CMTimeMakeWithSeconds(3.0, 600);
+
+                //CMTimeRange range = CMTimeRangeMake(start, duration);
+
+                //exportSession.timeRange = range;
+
+                [exportSession exportAsynchronouslyWithCompletionHandler:^{
+
+                    switch ([exportSession status]) {
+
+                        case AVAssetExportSessionStatusFailed:
+                            NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
+
+                            break;
+
+                        case AVAssetExportSessionStatusCancelled:
+
+                            NSLog(@"Export canceled");
+
+                            break;
+
+                        default:
+
+                            break;
+
+                    }
+ return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
+                    [exportSession release];
+
+                }];
+
+            }
     return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
 }
 
@@ -406,52 +454,7 @@
     CDVPluginResult* result = nil;
     NSString* moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
     if (moviePath) {
-	   AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:moviePath] options:nil];
-    NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
-
-    if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
-    {
-        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *videoPath = [NSString stringWithFormat:@"%@/xyz.mp4", [paths objectAtIndex:0]];
-        exportSession.outputURL = [NSURL fileURLWithPath:videoPath];
-        NSLog(@"videopath of your mp4 file = %@",videoPath);  // PATH OF YOUR .mp4 FILE
-        exportSession.outputFileType = AVFileTypeMPEG4;
-
-      //  CMTime start = CMTimeMakeWithSeconds(1.0, 600);
-      //  CMTime duration = CMTimeMakeWithSeconds(3.0, 600);           
-      //  CMTimeRange range = CMTimeRangeMake(start, duration);            
-      //   exportSession.timeRange = range;        
-      //  UNCOMMENT ABOVE LINES FOR CROP VIDEO   
-        [exportSession exportAsynchronouslyWithCompletionHandler:^{
-
-            switch ([exportSession status]) {
-
-                case AVAssetExportSessionStatusFailed:
-                    NSLog(@"Export failed: %@", [[exportSession error] localizedDescription]);
-
-                    break;
-
-                case AVAssetExportSessionStatusCancelled:
-
-                    NSLog(@"Export canceled");
-
-                    break;
-
-                default:
-
-                    break;
-
-            }
-             UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, nil, nil);
-            [exportSession release];
-			result = [self processVideo:videoPath forCallbackId:callbackId];
-
-        }];
-
-    }else{
         result = [self processVideo:moviePath forCallbackId:callbackId];
-		}
     }
     if (!result) {
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageToErrorObject:CAPTURE_INTERNAL_ERR];
