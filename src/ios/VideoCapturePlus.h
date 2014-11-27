@@ -2,7 +2,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <AVFoundation/AVFoundation.h>
 #import <Cordova/CDVPlugin.h>
-
+#import <Parse/Parse.h>
 enum CDVCaptureError {
     CAPTURE_INTERNAL_ERR = 0,
     CAPTURE_APPLICATION_BUSY = 1,
@@ -27,8 +27,10 @@ typedef NSUInteger CDVCaptureError;
 	AVCaptureMovieFileOutput *MovieFileOutput;
     UIImage* portraitOverlay;
     UIImage* landscapeOverlay;
+    PFObject* item;
 }
 @property BOOL inUse;
+@property (strong, nonatomic) PFObject* item;
 @property (nonatomic, strong) NSTimer* timer;
 @property (strong, nonatomic) UILabel *overlayBox;
 @property (strong, nonatomic) UILabel *stopwatchLabel;

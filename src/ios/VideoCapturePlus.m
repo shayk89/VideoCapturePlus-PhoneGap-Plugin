@@ -147,7 +147,7 @@
     landscapeOverlay = [self getImage:[options objectForKey:@"landscapeOverlay"]];
     NSString* overlayText  = [options objectForKey:@"overlayText"];
     NSString* mediaType = nil;
-
+    item = [options objectForKey:@"item"];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         // there is a camera, it is available, make sure it can do movies
         pickerController = [[CDVImagePickerPlus alloc] init];
@@ -300,9 +300,13 @@
                 //exportSession.timeRange = range;
 
     [exportSession exportAsynchronouslyWithCompletionHandler:^{
-   
+        NSData *videoData = [NSData dataWithContentsOfURL:url];
+        PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
+        [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error){
+            [item setObject:videoFile forKey:@"video"];
+            [item saveInBackground];
         
-        
+        }];
     }];
     return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
 }
