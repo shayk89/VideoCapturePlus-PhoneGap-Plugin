@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <AVFoundation>
 #import <AVFoundation/AVFoundation.h>
 #import <Cordova/CDVPlugin.h>
 
