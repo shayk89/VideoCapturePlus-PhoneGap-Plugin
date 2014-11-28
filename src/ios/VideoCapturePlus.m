@@ -307,7 +307,7 @@
         PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
         [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error){
             [item setObject:videoFile forKey:@"video"];
-            [item saveInBackground];
+            [item save];
         
         }];
     }];
