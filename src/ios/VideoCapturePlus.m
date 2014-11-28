@@ -147,7 +147,10 @@
     landscapeOverlay = [self getImage:[options objectForKey:@"landscapeOverlay"]];
     NSString* overlayText  = [options objectForKey:@"overlayText"];
     NSString* mediaType = nil;
-    item = [options objectForKey:@"item"];
+    PFQuery* query = [PFQuery queryWithClassName:@"Item"];
+    //[query whereKey:@"objectId" equalTo:[options objectForKey:@"item"]];
+   
+    item = [query getObjectWithId:(NSString*)[options objectForKey:@"item"]];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         // there is a camera, it is available, make sure it can do movies
         pickerController = [[CDVImagePickerPlus alloc] init];
