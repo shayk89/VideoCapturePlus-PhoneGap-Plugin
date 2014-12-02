@@ -27,12 +27,11 @@ typedef NSUInteger CDVCaptureError;
     AVCaptureMovieFileOutput *MovieFileOutput;
     UIImage* portraitOverlay;
     UIImage* landscapeOverlay;
-    PFObject* item;
+    
 }
 @property BOOL inUse;
 @property (strong, nonatomic) PFObject* item;
-@property (strong, nonatomic) NSString* uname;
-@property (strong, nonatomic) NSString* upass;
+@property (strong, nonatomic) NSString* utoken;
 @property (nonatomic, strong) NSTimer* timer;
 @property (strong, nonatomic) UILabel *overlayBox;
 @property (strong, nonatomic) UILabel *stopwatchLabel;

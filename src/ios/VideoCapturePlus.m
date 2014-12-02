@@ -151,8 +151,7 @@
     //[query whereKey:@"objectId" equalTo:[options objectForKey:@"item"]];
     
     _item = [query getObjectWithId:(NSString*)[options objectForKey:@"item"]];
-    _uname = [options objectForKey:@"uname"];
-    _upass = [options objectForKey:@"upw"];
+    _utoken = [options objectForKey:@"token"];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         // there is a camera, it is available, make sure it can do movies
         pickerController = [[CDVImagePickerPlus alloc] init];
@@ -304,15 +303,14 @@
     
     //exportSession.timeRange = range;
     if([PFUser currentUser] == nil)
-        [PFUser logInWithUsername:_uname password:_upass];
+        [PFUser become:_utoken];
     
     
     [exportSession exportAsynchronouslyWithCompletionHandler:^{
         NSData *videoData = [NSData dataWithContentsOfURL:url];
         PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
         [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError* error){
-            PFUser* user = [PFUser currentUser];
-            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:user.username delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            PFUser* user = [PFUser currentUser];            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:user.username delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [alert show];
             
             [_item setObject:videoFile forKey:@"video"];
