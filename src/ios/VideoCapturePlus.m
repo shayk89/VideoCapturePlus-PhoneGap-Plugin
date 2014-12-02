@@ -307,6 +307,8 @@
         PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
         [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error){
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:error.description delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+            [alert release];
             [item setObject:videoFile forKey:@"video"];
             [item save];
         
