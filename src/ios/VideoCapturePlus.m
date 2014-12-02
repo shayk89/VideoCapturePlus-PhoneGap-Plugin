@@ -310,11 +310,23 @@
         NSData *videoData = [NSData dataWithContentsOfURL:url];
         PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
         [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError* error){
-            PFUser* user = [PFUser currentUser];            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:user.username delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
+            if(succeeded){
+                UIAlertView* sAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"video file uploaded to parse" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [sAlert show];
+            }else{
+                UIAlertView* fAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"video file not uploaded to parse" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [fAlert show];
+            }
             
             [_item setObject:videoFile forKey:@"video"];
-            [_item save];
+            if([_item save]){
+                UIAlertView* sAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"item video updated" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [sAlert show];
+                
+            }else{
+                UIAlertView* fAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"item video not updated" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [fAlert show];
+            }
             
         }];
     }];
