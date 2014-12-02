@@ -295,13 +295,13 @@
     
     _exportSession.outputFileType = AVFileTypeMPEG4;
     
-    //CMTime start = CMTimeMakeWithSeconds(1.0, 600);
+    CMTime start = CMTimeMakeWithSeconds(1.0, 600);
     
-    //CMTime duration = CMTimeMakeWithSeconds(3.0, 600);
+    CMTime duration = CMTimeMakeWithSeconds(3.0, 600);
     
-    //CMTimeRange range = CMTimeRangeMake(start, duration);
+    CMTimeRange range = CMTimeRangeMake(start, duration);
     
-    //exportSession.timeRange = range;
+    _exportSession.timeRange = range;
     if([PFUser currentUser] == nil)
         [PFUser become:_utoken];
     
