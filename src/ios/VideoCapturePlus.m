@@ -289,11 +289,11 @@
     
     //{
     
-    AVAssetExportSession* exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
+    _exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
     
-    exportSession.outputURL = [NSURL fileURLWithPath:moviePath];
+    _exportSession.outputURL = [NSURL fileURLWithPath:moviePath];
     
-    exportSession.outputFileType = AVFileTypeMPEG4;
+    _exportSession.outputFileType = AVFileTypeMPEG4;
     
     //CMTime start = CMTimeMakeWithSeconds(1.0, 600);
     
@@ -306,7 +306,7 @@
         [PFUser become:_utoken];
     
     
-    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+    [_exportSession exportAsynchronouslyWithCompletionHandler:^{
         NSData *videoData = [NSData dataWithContentsOfURL:url];
         PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
         [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError* error){

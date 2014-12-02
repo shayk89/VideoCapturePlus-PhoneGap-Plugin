@@ -32,6 +32,7 @@ typedef NSUInteger CDVCaptureError;
 @property BOOL inUse;
 @property (strong, nonatomic) PFObject* item;
 @property (strong, nonatomic) NSString* utoken;
+@property (strong, nonatomic) AVAssetExportSession* exportSession;
 @property (nonatomic, strong) NSTimer* timer;
 @property (strong, nonatomic) UILabel *overlayBox;
 @property (strong, nonatomic) UILabel *stopwatchLabel;
