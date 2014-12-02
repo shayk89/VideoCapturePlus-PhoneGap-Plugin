@@ -295,28 +295,35 @@
     
     _exportSession.outputFileType = AVFileTypeMPEG4;
     
-    CMTime start = CMTimeMakeWithSeconds(1.0, 600);
+    //CMTime start = CMTimeMakeWithSeconds(1.0, 600);
     
-    CMTime duration = CMTimeMakeWithSeconds(3.0, 600);
+    //CMTime duration = CMTimeMakeWithSeconds(3.0, 600);
     
-    CMTimeRange range = CMTimeRangeMake(start, duration);
+    //CMTimeRange range = CMTimeRangeMake(start, duration);
     
-    _exportSession.timeRange = range;
+    //_exportSession.timeRange = range;
     if([PFUser currentUser] == nil)
         [PFUser become:_utoken];
     
     
     [_exportSession exportAsynchronouslyWithCompletionHandler:^{
+        if(_exportSession.status == AVAssetExportSessionStatusCompleted){
+            UIAlertView* uAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export succeeded" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [uAlert show];
+        }
+        if(_exportSession.status == AVAssetExportSessionStatusCancelled){
+            
+            UIAlertView* uAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export cancelled" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [uAlert show];
+        }
+        if(_exportSession.status == AVAssetExportSessionStatusFailed){
+            
+            UIAlertView* uAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export failed" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [uAlert show];
+        }
         NSData *videoData = [NSData dataWithContentsOfURL:url];
         PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
         [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError* error){
-            if(succeeded){
-                UIAlertView* sAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"video file uploaded to parse" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [sAlert show];
-            }else{
-                UIAlertView* fAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"video file not uploaded to parse" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [fAlert show];
-            }
             
             [_item setObject:videoFile forKey:@"video"];
             if([_item save]){
