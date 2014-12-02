@@ -64,11 +64,11 @@
     } else if (deviceOrientation == UIDeviceOrientationLandscapeRight) {
         rotation = -M_PI_2;
     }
-
+    
     if (rotation != 0) {
-      CGAffineTransform transform = overlayView.transform;
-      transform = CGAffineTransformRotate(transform, rotation);
-      overlayView.transform = transform;
+        CGAffineTransform transform = overlayView.transform;
+        transform = CGAffineTransformRotate(transform, rotation);
+        overlayView.transform = transform;
     }
 }
 
@@ -76,15 +76,15 @@
     if (portraitOverlay == nil && landscapeOverlay == nil) {
         return;
     }
-
+    
     UIView* overlayView = [[UIView alloc] initWithFrame:pickerController.view.frame];
-
+    
     // png transparency
     [overlayView.layer setOpaque:NO];
     overlayView.opaque = NO;
-
+    
     UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
-
+    
     UIImage* overlayImage;
     if (UIDeviceOrientationIsLandscape(deviceOrientation)) {
         overlayImage = landscapeOverlay;
@@ -95,11 +95,11 @@
     if (overlayImage != nil) {
         overlayView.backgroundColor = [UIColor colorWithPatternImage:overlayImage];
         [overlayView setFrame:CGRectMake(0, 0, overlayImage.size.width, overlayImage.size.height)]; // x, y, width, height
-
+        
         // regardless the orientation, these are the width and height in portrait mode
         float width = CGRectGetWidth(pickerController.view.frame);
         float height = CGRectGetHeight(pickerController.view.frame);
-
+        
         if (CDV_IsIPad()) {
             if (UIDeviceOrientationIsLandscape(deviceOrientation)) {
                 [overlayView setCenter:CGPointMake(height/2,width/2)];
@@ -127,7 +127,7 @@
     // emit and capture changes to the deviceOrientation
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:@"UIDeviceOrientationDidChangeNotification" object:nil];
-
+    
     // enable this line of code if you want to do stuff when the capture session is started
     // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didStartRunning:) name:AVCaptureSessionDidStartRunningNotification object:nil];
     
@@ -149,7 +149,7 @@
     NSString* mediaType = nil;
     PFQuery* query = [PFQuery queryWithClassName:@"Item"];
     //[query whereKey:@"objectId" equalTo:[options objectForKey:@"item"]];
-   
+    
     item = [query getObjectWithId:(NSString*)[options objectForKey:@"item"]];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         // there is a camera, it is available, make sure it can do movies
@@ -160,7 +160,7 @@
             types = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
             // NSLog(@"MediaTypes: %@", [types description]);
             
-             if ([types containsObject:(NSString*)kUTTypeVideo]) {
+            if ([types containsObject:(NSString*)kUTTypeVideo]) {
                 mediaType = (NSString*)kUTTypeVideo;
             }else if ([types containsObject:(NSString*)kUTTypeMovie]) {
                 mediaType = (NSString*)kUTTypeMovie;
@@ -199,10 +199,10 @@
             
             pickerController.delegate = self;
             [self alignOverlayDimensionsWithOrientation];
-
-
-
-			if(overlayText != nil) {
+            
+            
+            
+            if(overlayText != nil) {
                 NSUInteger txtLength = overlayText.length;
                 
                 CGRect labelFrame = CGRectMake(10, 40, CGRectGetWidth(pickerController.view.frame) - 20, 40 + (20*(txtLength/25)));
@@ -222,7 +222,7 @@
                 
                 [pickerController.view addSubview:self.overlayBox];
             }
-			
+            
             
             // trying to add a progressbar to the bottom
             /*
@@ -233,7 +233,7 @@
              
              self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(updateStopwatchLabel) userInfo:nil repeats:YES];
              */
-
+            
             // TODO make this configurable via the API (but only if Android supports it)
             // pickerController.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
         }
@@ -270,9 +270,9 @@
 }
 
 //- (void)updateStopwatchLabel {
-    // update the label with the elapsed time
-    //  [self.stopwatchLabel setText:[self.timer.timeInterval]];
-    //   [self.timerLabel setText:[self formatTime:self.avRecorder.currentTime]];
+// update the label with the elapsed time
+//  [self.stopwatchLabel setText:[self.timer.timeInterval]];
+//   [self.timerLabel setText:[self formatTime:self.avRecorder.currentTime]];
 //}
 
 - (CDVPluginResult*)processVideo:(NSString*)moviePath forCallbackId:(NSString*)callbackId {
@@ -280,38 +280,38 @@
     NSDictionary* fileDict = [self getMediaDictionaryFromPath:moviePath ofType:nil];
     NSArray* fileArray = [NSArray arrayWithObject:fileDict];
     NSURL *url = [NSURL URLWithString:[moviePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-	AVURLAsset* avAsset = [AVURLAsset URLAssetWithURL:url options:nil];
-
-            NSArray* compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
-
-            //if ([compatiblePresets containsObject:AVAssetExportPresetPassthrough])
-
-            //{
-
-                AVAssetExportSession* exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
-
-                exportSession.outputURL = [NSURL fileURLWithPath:moviePath];
-
-                exportSession.outputFileType = AVFileTypeMPEG4;
-
-                //CMTime start = CMTimeMakeWithSeconds(1.0, 600);
-
-                //CMTime duration = CMTimeMakeWithSeconds(3.0, 600);
-
-                //CMTimeRange range = CMTimeRangeMake(start, duration);
-
-                //exportSession.timeRange = range;
-
+    AVURLAsset* avAsset = [AVURLAsset URLAssetWithURL:url options:nil];
+    
+    NSArray* compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
+    
+    //if ([compatiblePresets containsObject:AVAssetExportPresetPassthrough])
+    
+    //{
+    
+    AVAssetExportSession* exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
+    
+    exportSession.outputURL = [NSURL fileURLWithPath:moviePath];
+    
+    exportSession.outputFileType = AVFileTypeMPEG4;
+    
+    //CMTime start = CMTimeMakeWithSeconds(1.0, 600);
+    
+    //CMTime duration = CMTimeMakeWithSeconds(3.0, 600);
+    
+    //CMTimeRange range = CMTimeRangeMake(start, duration);
+    
+    //exportSession.timeRange = range;
+    
     [exportSession exportAsynchronouslyWithCompletionHandler:^{
         NSData *videoData = [NSData dataWithContentsOfURL:url];
         PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
         [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError* error){
-            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:error.description delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            PFUser* user = [PFUser currentUser];            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:user.username delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [alert show];
             
             [item setObject:videoFile forKey:@"video"];
             [item save];
-        
+            
         }];
     }];
     return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
@@ -344,14 +344,14 @@
     NSString* fullPath = [command.arguments objectAtIndex:0];
     // mimeType could be null
     NSString* mimeType = nil;
-
+    
     if ([command.arguments count] > 1) {
         mimeType = [command.arguments objectAtIndex:1];
     }
     BOOL bError = NO;
     CDVCaptureError errorCode = CAPTURE_INTERNAL_ERR;
     CDVPluginResult* result = nil;
-
+    
     if (!mimeType || [mimeType isKindOfClass:[NSNull class]]) {
         // try to determine mime type if not provided
         mimeType = [self getMimeTypeFromFullPath:fullPath];
@@ -369,18 +369,18 @@
         [formatData setObject:[NSNumber numberWithInt:0] forKey:kW3CMediaFormatHeight];
         [formatData setObject:[NSNumber numberWithInt:0] forKey:kW3CMediaFormatWidth];
         [formatData setObject:[NSNumber numberWithInt:0] forKey:kW3CMediaFormatDuration];
-
+        
         if (([mimeType rangeOfString:@"video/"].location != NSNotFound) && (NSClassFromString(@"AVURLAsset") != nil)) {
             NSURL* movieURL = [NSURL fileURLWithPath:fullPath];
             AVURLAsset* movieAsset = [[AVURLAsset alloc] initWithURL:movieURL options:nil];
             CMTime duration = [movieAsset duration];
             [formatData setObject:[NSNumber numberWithFloat:CMTimeGetSeconds(duration)]  forKey:kW3CMediaFormatDuration];
-
+            
             NSArray* allVideoTracks = [movieAsset tracksWithMediaType:AVMediaTypeVideo];
             if ([allVideoTracks count] > 0) {
                 AVAssetTrack* track = [[movieAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
                 CGSize size = [track naturalSize];
-
+                
                 [formatData setObject:[NSNumber numberWithFloat:size.height] forKey:kW3CMediaFormatHeight];
                 [formatData setObject:[NSNumber numberWithFloat:size.width] forKey:kW3CMediaFormatWidth];
             } else {
