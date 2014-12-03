@@ -310,33 +310,25 @@
         if(_exportSession.status == AVAssetExportSessionStatusCompleted){
             UIAlertView* cAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export succeeded" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
             [cAlert show];
-        }
-        if(_exportSession.status == AVAssetExportSessionStatusCancelled){
             
-                UIAlertView* caAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export cancelled" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [caAlert show];
-        }
-        if(_exportSession.status == AVAssetExportSessionStatusFailed){
-           
-                UIAlertView* faAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export failed" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [faAlert show];
-        }
-        NSData *videoData = [NSData dataWithContentsOfURL:url];
+            NSData *videoData = [NSData dataWithContentsOfURL:url];
             PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
-        [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError* error){
-            
-            [_item setObject:videoFile forKey:@"video"];
-            if([_item save]){
-                UIAlertView* sAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"item video updated" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [sAlert show];
+            [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError* error){
                 
-            }else{
-                UIAlertView* fAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"item video not updated" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                [fAlert show];
-            }
-            
-        }];
+                [_item setObject:videoFile forKey:@"video"];
+                if([_item save]){
+                    UIAlertView* sAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"item video updated" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                    [sAlert show];
+                    
+                }else{
+                    UIAlertView* fAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"item video not updated" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                    [fAlert show];
+                }
+                
+            }];
+        }
     }];
+    
     return [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:fileArray];
 }
 
