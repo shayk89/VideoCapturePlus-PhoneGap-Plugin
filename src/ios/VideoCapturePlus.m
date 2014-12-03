@@ -295,34 +295,34 @@
     
     _exportSession.outputFileType = AVFileTypeMPEG4;
     
-    //CMTime start = CMTimeMakeWithSeconds(1.0, 600);
+    CMTime start = CMTimeMakeWithSeconds(0.0, 600);
     
-    //CMTime duration = CMTimeMakeWithSeconds(3.0, 600);
+    CMTime duration = CMTimeMakeWithSeconds(8.0, 600);
     
-    //CMTimeRange range = CMTimeRangeMake(start, duration);
+    CMTimeRange range = CMTimeRangeMake(start, duration);
     
-    //_exportSession.timeRange = range;
+    _exportSession.timeRange = range;
     if([PFUser currentUser] == nil)
         [PFUser become:_utoken];
     
     
     [_exportSession exportAsynchronouslyWithCompletionHandler:^{
         if(_exportSession.status == AVAssetExportSessionStatusCompleted){
-            UIAlertView* uAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export succeeded" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [uAlert show];
+            UIAlertView* cAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export succeeded" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [cAlert show];
         }
         if(_exportSession.status == AVAssetExportSessionStatusCancelled){
             
-            UIAlertView* uAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export cancelled" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [uAlert show];
+                UIAlertView* caAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export cancelled" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [caAlert show];
         }
         if(_exportSession.status == AVAssetExportSessionStatusFailed){
-            
-            UIAlertView* uAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export failed" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [uAlert show];
+           
+                UIAlertView* faAlert = [[UIAlertView alloc] initWithTitle:@"Thrift Karma" message:@"export failed" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [faAlert show];
         }
         NSData *videoData = [NSData dataWithContentsOfURL:url];
-        PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
+            PFFile *videoFile = [PFFile fileWithName:@"video.mp4" data:videoData];
         [videoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError* error){
             
             [_item setObject:videoFile forKey:@"video"];
